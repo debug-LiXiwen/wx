@@ -59,12 +59,6 @@ public class CommunityServiceImpl implements CommunityService {
                 if (null != community.getPic()){
                     map.put("pic", community.getPic());
                 }
-                if (null != community.getPic1()){
-                    map.put("pic1", community.getPic());
-                }
-                if (null != community.getPic2()){
-                    map.put("pic2", community.getPic());
-                }
                 map.put("viewsNumber", community.getViewsNumber());
                 map.put("likesNumber", community.getLikesNumber());
                 map.put("commentsNumber", community.getCommentsNumber());
@@ -84,22 +78,24 @@ public class CommunityServiceImpl implements CommunityService {
         List<Community> communityList = communityMapper.selectAllCommunity();
         if (null != communityList){
             for (Community community1 : communityList){
-                Map<String, Object> map = new HashMap<>(8);
-                map.put("id",community1.getSystemId());
-                map.put("writer", community1.getWriter());
-                map.put("title", community1.getTitle());
-                map.put("commentNumber",community1.getCommentsNumber());
-                map.put("userPaiwei",community1.getUserPaiwei());
-                map.put("userPaiweiImg",community1.getUserImg());
-                if (null != community1.getPic()){
-                    map.put("pic", community1.getPic());
+                if (community1.getPass() == 1) {
+                    Map<String, Object> map = new HashMap<>(8);
+                    map.put("id", community1.getSystemId());
+                    map.put("writer", community1.getWriter());
+                    map.put("title", community1.getTitle());
+                    map.put("commentNumber", community1.getCommentsNumber());
+                    map.put("userPaiwei", community1.getUserPaiwei());
+                    map.put("userPaiweiImg", community1.getUserImg());
+                    if (null != community1.getPic()) {
+                        map.put("pic", community1.getPic());
+                    }
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    map.put("time", formatter.format(community1.getTime()));
+                    map.put("viewsNumber", community1.getViewsNumber());
+                    map.put("icon", community1.getIcon());
+                    map.put("category", community1.getCategory());
+                    al.add(map);
                 }
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                map.put("time", formatter.format(community1.getTime()));
-                map.put("viewsNumber", community1.getViewsNumber());
-                map.put("icon", community1.getIcon());
-                map.put("category",community1.getCategory());
-                al.add(map);
             }
             return al;
         }
@@ -112,15 +108,19 @@ public class CommunityServiceImpl implements CommunityService {
     @Override
     public List<Map<String, Object>> getAllCommunities() throws WxException {
         List<Map<String, Object>> al = new ArrayList<>();
-        List<Community> communityList = communityMapper.selectCommunities();
+        List<Community> communityList = communityMapper.selectAllCommunity();
         if (null != communityList){
-            for (Community community1 : communityList){
-                Map<String, Object> map = new HashMap<>(8);
-                map.put("writer", community1.getWriter());
-                map.put("title", community1.getTitle());
-                map.put("id", community1.getSystemId());
-                map.put("content", community1.getContent());
-                al.add(map);
+            for (Community community : communityList){
+                if (community.getPass() == 0) {
+                    Map<String, Object> map = new HashMap<>(8);
+                    map.put("id", community.getSystemId());
+                    map.put("title", community.getTitle());
+                    map.put("content", community.getContent());
+                    if (null != community.getPic()) {
+                        map.put("pic", community.getPic());
+                    }
+                    al.add(map);
+                }
             }
             return al;
         }
@@ -128,6 +128,7 @@ public class CommunityServiceImpl implements CommunityService {
             throw new WxException("系统异常!");
         }
     }
+
 
     @Override
     public List<Map<String, Object>> getCommunityByKeyword(String keyword) throws WxException{
@@ -198,22 +199,15 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Override
     public boolean insertPassCommunity(Integer systemId) throws WxException {
-        boolean flag = false;
         Community community = new Community();
         community.setSystemId(systemId);
-
-        List<Community> list = communityMapper.selectPassCommunityByCondition(community);
-        if (null != list && 1 == list.size()){
-            community = list.get(0);
-
-            int success = communityMapper.insertPassCommunity(community);
-            if (0 < success){
-                flag = true;
-            }
+        boolean flag = false;
+        int success = communityMapper.updatePass(community);
+        if (0 < success){
+            flag = true;
         } else {
-            throw new WxException("系统异常!");
+            throw new WxException("系统异常");
         }
-
         return flag;
     }
 
@@ -295,10 +289,11 @@ public class CommunityServiceImpl implements CommunityService {
                     map.put("pic", community1.getPic());
                 }
                 map.put("writer", community1.getWriter());
-                if(null!=community1.getUserPaiwei())
+                if(null!=community1.getUserPaiwei()) {
                     map.put("userPaiwei",community1.getUserPaiwei());
-                else
-                    map.put("userPaiwei","");
+                } else {
+                    map.put("userPaiwei", "");
+                }
                 map.put("userPaiweiImg",community1.getUserImg());
                 map.put("category",community1.getCategory());
                 Al.add(map);

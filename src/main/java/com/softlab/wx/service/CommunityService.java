@@ -24,18 +24,19 @@ public interface CommunityService {
      */
     Map<String, Object> getCommunityDetailByCommunitySystemId(Community community) throws WxException;
 
+
     /**
-     *打印出所有文章
+     *打印出已审核文章
      *
      */
     List<Map<String, Object>> getAllCommunity() throws WxException;
 
+
     /**
-     *打印出所有文章
+     *打印出未审核文章
      *
      */
     List<Map<String, Object>> getAllCommunities() throws WxException;
-
 
     /**
      *文章搜索
@@ -49,7 +50,6 @@ public interface CommunityService {
      *
      */
     boolean insertCommunity(Community community) throws WxException;
-
 
 
     /**

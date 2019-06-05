@@ -138,7 +138,6 @@ public class CommunityController {
     @RequestMapping(value = "/detail/comment", method = RequestMethod.POST)
     public RestData insertCommunityComment(@RequestBody Comment comment, HttpServletRequest request){
         logger.info(" insertComment: " + JsonUtil.getJsonString(comment));
-        //logger.info(" insertCommunity: " + JsonUtil.getJsonString(community));
         try {
             boolean flag = communityService.insertCommunityComment(comment, comment.getSystemId());
             return new RestData(flag);
@@ -177,7 +176,7 @@ public class CommunityController {
      * @throws WxException
      */
     @RequestMapping(value = "/my/delete/{systemId}", method = RequestMethod.POST)
-    public RestData deleteMyCommunity(@PathVariable(value = "systemId") Integer systemId, HttpServletRequest request) throws WxException{
+    public RestData deleteMyCommunity(@PathVariable(value = "systemId") Integer systemId, HttpServletRequest request){
         logger.info("deleteMyCommunity: " + JsonUtil.getJsonString(systemId));
         try {
             Community community = new Community();
@@ -194,12 +193,11 @@ public class CommunityController {
     /**
      * 获取审核文章
      *
-     * @param request
      * @return
      * @throws WxException
      */
     @RequestMapping(value = "/getPassCommunity", method = RequestMethod.GET)
-    public RestData getPassCommunity(HttpServletRequest request) throws WxException{
+    public RestData getPassCommunity(){
         logger.info("getPassCommunity");
        try {
            List<Map<String, Object>> data = communityService. getAllCommunities();
@@ -217,11 +215,10 @@ public class CommunityController {
      * @throws WxException
      */
     @RequestMapping(value = "/passCommunity", method = RequestMethod.GET)
-    public RestData passCommunity(@RequestParam(value = "systemId") Integer systemId) throws WxException{
+    public RestData passCommunity(@RequestParam(value = "systemId") Integer systemId){
         logger.info("passCommunity" + JsonUtil.getJsonString(systemId));
         try {
             boolean flag = communityService.insertPassCommunity(systemId);
-            Map<String, Object> rtv = communityService.deleteArticleAndCommentById(systemId);
             return new RestData(flag);
         } catch (WxException e) {
             return new RestData(1, e.getMessage());

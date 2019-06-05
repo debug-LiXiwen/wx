@@ -45,16 +45,6 @@ public class Community {
     private String pic;
 
     /**
-     * 文章内容图片1
-     */
-    private String pic1;
-
-    /**
-     * 文章内容图片2
-     */
-    private String pic2;
-
-    /**
      * 文章完成时间
      */
     private Date time;
@@ -80,9 +70,15 @@ public class Community {
     private Integer commentsNumber;
 
     /**
+     * 文章是否通过审核
+     */
+    private Integer pass;
+
+    /**
      * 用户排位名字
      */
     private String userPaiwei;
+
     /**
      * 用户排位图片
      */
@@ -153,14 +149,6 @@ public class Community {
 
     public void setPic(String pic) { this.pic = pic; }
 
-    public String getPic1() { return pic1; }
-
-    public void setPic1(String pic1) { this.pic1 = pic1; }
-
-    public String getPic2() { return pic2; }
-
-    public void setPic2(String pic2) { this.pic2 = pic2; }
-
     public Date getTime() { return time; }
 
     public void setTime(Date time) {
@@ -197,8 +185,11 @@ public class Community {
         this.commentsNumber = commentsNumber;
     }
 
+    public Integer getPass() {
+        return pass;
+    }
 
-
-
-
+    public void setPass(Integer pass) {
+        this.pass = pass;
+    }
 }

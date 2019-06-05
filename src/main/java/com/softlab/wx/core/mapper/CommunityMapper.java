@@ -20,35 +20,14 @@ public interface CommunityMapper {
     /**
      * 获取文章详情
      */
-    @Select("SELECT community_systemId as systemId, community_title as title, community_writer as writer,community_pic as pic, community_pic1 as pic1, community_pic2 as pic2, community_time as time, community_content as content, " +
-                   "community_viewsNumber as viewsNumber, community_likesNumber as likesNumber, " +
-                   "community_commentsNumber as commentsNumber, community_icon as icon, community_oppidA as oppidA ,community_userpaiwei as userPaiwei ,community_userimg as userImg ,community_category as category FROM community_article WHERE community_systemId=#{systemId}")
+    @Select("SELECT community_systemId as systemId, community_title as title, community_writer as writer,community_pic as pic, community_time as time, community_content as content, community_viewsNumber as viewsNumber, community_likesNumber as likesNumber, community_commentsNumber as commentsNumber, community_icon as icon, community_oppidA as oppidA ,community_userpaiwei as userPaiwei ,community_userimg as userImg ,community_category as category FROM community_article WHERE community_systemId=#{systemId}")
     List<Community> selectCommunityByCondition(Community community);
 
     /**
-     * 获取文章详情
+     * 获取所有文章
      */
-    @Select("SELECT community_systemId as systemId, community_title as title, community_writer as writer,community_pic as pic, community_pic1 as pic1, community_pic2 as pic2, community_time as time, community_content as content, " +
-            "community_viewsNumber as viewsNumber, community_likesNumber as likesNumber, " +
-            "community_commentsNumber as commentsNumber, community_icon as icon, community_oppidA as oppidA ,community_userpaiwei as userPaiwei ,community_userimg as userImg ,community_category as category FROM community_article WHERE community_systemId=#{systemId}")
-    List<Community> selectPassCommunityByCondition(Community community);
-
-
-    /**
-     * 获取所有显示文章
-     */
-    @Select("SELECT community_systemId as systemId, community_title as title, community_writer as writer, community_pic as pic, community_pic1 as pic1, community_pic2 as pic2, " +
-            " community_time as time, community_content as content, community_viewsNumber as viewsNumber, community_likesNumber " +
-            "as likesNumber, community_commentsNumber as commentsNumber, community_icon as icon ,community_userpaiwei as userPaiwei ,community_userimg as userImg ,community_category as category FROM community_article ORDER BY community_time DESC")
+    @Select("SELECT community_systemId as systemId, community_title as title, community_writer as writer, community_pic as pic, community_time as time, community_content as content, community_viewsNumber as viewsNumber, community_likesNumber as likesNumber, community_commentsNumber as commentsNumber, community_icon as icon ,community_userpaiwei as userPaiwei ,community_userimg as userImg ,community_category as category, community_pass as pass FROM community_article ORDER BY community_time DESC")
     List<Community> selectAllCommunity();
-
-
-    /**
-     * 获取所有审核文章
-     */
-    @Select("SELECT community_systemId as systemId, community_title as title, community_writer as writer, community_pic as pic, community_pic1 as pic1, community_pic2 as pic2, community_time as time, community_content as content, community_viewsNumber as viewsNumber, community_likesNumber as likesNumber, community_commentsNumber as commentsNumber, community_icon as icon ,community_userpaiwei as userPaiwei ,community_userimg as userImg ,community_category as category FROM article ORDER BY community_time DESC")
-    List<Community> selectCommunities();
-
 
 
     /**
@@ -56,7 +35,7 @@ public interface CommunityMapper {
      */
     @Select("SELECT community_systemId as systemId, community_title as title, community_writer as writer, community_pic as pic," +
             " community_time as time, community_content as content, community_viewsNumber as viewsNumber, community_likesNumber " +
-            "as likesNumber, community_commentsNumber as commentsNumber, community_icon as icon,community_userpaiwei as userPaiwei ,community_userimg as userImg ,community_category as category FROM community_article WHERE Community_title LIKE CONCAT(CONCAT('%',#{keyword},'%'))")
+            "as likesNumber, community_commentsNumber as commentsNumber, community_icon as icon,community_userpaiwei as userPaiwei ,community_userimg as userImg ,community_category as category, community_pass as pass FROM community_article WHERE Community_title LIKE CONCAT(CONCAT('%',#{keyword},'%'))")
     List<Community> selectCommunityByKeyword(@Param("keyword") String keyword);
 
 
@@ -64,21 +43,13 @@ public interface CommunityMapper {
      * 发布审核帖子
      */
     @Insert("INSERT INTO article(community_title, community_content, " +
-            "community_writer, community_pic, community_pic1, community_pic2, community_time, community_icon, community_oppidA,community_viewsNumber,community_likesNumber,community_commentsNumber,community_userpaiwei ,community_userimg,community_category) VALUES (#{title}, #{content}, #{writer}, #{pic}, #{pic1}, #{pic2}, #{time}, #{icon}, #{oppidA},#{viewsNumber},#{likesNumber},#{commentsNumber},#{userPaiwei},#{userImg},#{category})" )
+            "community_writer, community_pic, community_time, community_icon, community_oppidA,community_viewsNumber,community_likesNumber,community_commentsNumber,community_userpaiwei ,community_userimg,community_category) VALUES (#{title}, #{content}, #{writer}, #{pic}, #{pic1}, #{pic2}, #{time}, #{icon}, #{oppidA},#{viewsNumber},#{likesNumber},#{commentsNumber},#{userPaiwei},#{userImg},#{category})" )
     int insertCommunity(Community community);
 
 
     /**
-     * 发布可展示帖子
-     */
-    @Insert("INSERT INTO community_article(community_title, community_content, " +
-            "community_writer, community_pic, community_pic1, community_pic2, community_time, community_icon, community_oppidA,community_viewsNumber,community_likesNumber,community_commentsNumber,community_userpaiwei ,community_userimg,community_category) VALUES (#{title}, #{content}, #{writer}, #{pic}, #{pic1}, #{pic2}, #{time}, #{icon}, #{oppidA},#{viewsNumber},#{likesNumber},#{commentsNumber},#{userPaiwei},#{userImg},#{category})" )
-    int insertPassCommunity(Community community);
-
-    /**
      * 指定帖子发布评论
      */
-    //@InsertProvider(type = CommunityProvider.class, method = "insertCommuntiyComment")
     @Insert("INSERT INTO community_comment(comment_isAnonym, comment_content, comment_communityId, " +
             "comment_writer, comment_pic, comment_time, comment_oppidA,comment_userpaiwei ,comment_userimg ) VALUES (#{isAnonym}, #{content}, #{communityId}, #{writer}, #{pic}, #{time}, #{oppidA},#{userPaiwei},#{userImg})" )
     int insertCommunityComment(Comment comment);
@@ -96,10 +67,17 @@ public interface CommunityMapper {
     /**
      * 查寻某用户的所有问题
      */
-    @Select("SELECT community_systemId as systemId, community_title as title, community_writer as writer, community_pic as pic," +
-            " community_time as time, community_content as content, community_viewsNumber as viewsNumber, community_likesNumber " +
-            "as likesNumber, community_commentsNumber as commentsNumber, community_oppidA as oppidA, community_icon as icon ,community_userpaiwei AS userPaiwei,community_userimg AS userImg ,community_category as category FROM community_article WHERE community_oppidA = #{oppidA}")
+    @Select("SELECT community_systemId as systemId, community_title as title, community_writer as writer, community_pic as pic, community_time as time, community_content as content, community_viewsNumber as viewsNumber, community_likesNumber as likesNumber, community_commentsNumber as commentsNumber, community_oppidA as oppidA, community_icon as icon ,community_userpaiwei AS userPaiwei,community_userimg AS userImg ,community_category as category FROM community_article WHERE community_oppidA = #{oppidA}")
     List<Community> selectAllCommunityByWriter(@Param("oppidA") String oppidA);
+
+    /**
+     * 审核文章
+     *
+     * @param community
+     * @return
+     */
+    @Update("update community_article set community_pass = 1 where community_systemId=#{systemId}")
+    int updatePass(Community community);
 
 
     /**
@@ -125,24 +103,11 @@ public interface CommunityMapper {
     String getUserName(@Param("oppidA") String oppidA);
 
 
-
     /**
      *返回只有排位名称和排位图片的pace
      */
     @Select("SELECT user_paiwei AS userPaiwei,user_img AS userImg FROM sortbushu WHERE user_id=#{oppidA}")
     Pace getPaiweiAndPaiweiImg(@Param("oppidA") String oppidA);
-
-
-
-    /**
-     *
-     * @param community
-     * @return
-     */
-    @Select("SELECT community_systemId as systemId, community_title as title, community_writer as writer,community_pic as pic, community_pic1 as pic1, community_pic2 as pic2, community_time as time, community_content as content, " +
-            "community_viewsNumber as viewsNumber, community_likesNumber as likesNumber, " +
-            "community_commentsNumber as commentsNumber, community_icon as icon, community_oppidA as oppidA ,community_userpaiwei as userPaiwei ,community_userimg as userImg,community_category as category FROM community_article WHERE community_title=#{title} AND community_time=#{time} AND community_oppidA=#{oppidA}")
-    List<Community> selectCommunityByOthers(Community community);
 
 
     @Update("update community_article set community_commentsNumber = #{commentsNumber} where community_systemId=#{systemId}")
