@@ -229,18 +229,23 @@ public class ColleageTimeServiceImpl implements ColleageTimeService {
         Date libraryBeginTime=null;
         Date libararyEndTime=null;
         if(today.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY){
-            System.out.println("今天是周三，图书管下午闭关");
+            System.out.println("今天是周三，图书管下午闭馆");
             //开始判断
             try {
                 now = dateFormat.parse(dateFormat.format(new Date()));
+                Date lb = dateFormat.parse("06:00");
                 libraryBeginTime = dateFormat.parse("12:00");
                 libararyEndTime = dateFormat.parse("18:00");
+                Date le = dateFormat.parse("21:30");
+
+                String s2 = belongCalendar(now, lb, libraryBeginTime);
+                String s3 = belongCalendar(now, libararyEndTime, le);
                 sl = belongCalendar(now, libraryBeginTime, libararyEndTime);
-                System.out.println("sl:"+sl);
-                if(sl.equals("1")){
-                    sl="http://www.ar1es.cn/book1.png";
-                }else{
+
+                if(s2.equals("1") || s3.equals("1")){
                     sl=colleageTime.getLibrary();
+                }else{
+                    sl="http://www.ar1es.cn/book1.png";
                 }
             } catch (Exception e) {
                 e.printStackTrace();
